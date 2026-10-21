@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sổ Tay Công Thức Toán 12: Đạo Hàm - Nguyên Hàm - Tích Phân</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering math -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <!-- Font Inter & Playfair/Merriweather -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb;
+        }
+        .serif-title {
+            font-family: 'Merriweather', serif;
+        }
+        /* Binder rings styling */
+        .binder-clip {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 2px 5px rgba(0,0,0,0.2);
+            background: linear-gradient(130deg, #9ca3af, #d1d5db, #6b7280);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .binder-page {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .binder-rings {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body class="py-6 px-2 md:px-6 min-h-screen flex justify-center items-center">
+
+    <!-- Main Container styled like a spiral/binder notebook -->
+    <div class="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-8 md:pl-16 md:pr-10 my-4 binder-page">
+        
+        <!-- Left Side Binder Rings Visuals (Hidden on small screens) -->
+        <div class="hidden md:flex flex-col justify-between absolute -left-4 top-8 bottom-8 w-8 z-20 pointer-events-none binder-rings">
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip mb-6 transform -rotate-3"></div>
+            <div class="w-10 h-4 rounded-full binder-clip transform -rotate-3"></div>
+        </div>
+
+        <!-- Header Controls & Pagination -->
+        <div class="flex flex-wrap justify-between items-center pb-4 border-b border-slate-100 gap-3 no-print">
+            <div>
+                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-md tracking-wide">TOÁN 12 • SỔ TAY ÔN TẬP</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-md">
+                    <span id="page-indicator">1</span> / 4
+                </span>
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium px-3.5 py-1.5 rounded-lg flex items-center transition shadow-sm">
+                    <i class="fa-solid fa-print mr-1.5"></i> In sổ tay
+                </button>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="mt-4 mb-5">
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 serif-title tracking-tight">Sổ tay công thức Đạo Hàm - Nguyên Hàm - Tích Phân</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Tóm tắt lý thuyết trọng tâm, các định lý, quy tắc và bảng công thức cơ bản & mở rộng.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative mb-6 no-print">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="searchInput" onkeyup="searchFormula()" placeholder="Tra cứu nhanh công thức (vd: sin, mũ, tích phân, đạo hàm, thể tích)..." 
+                   class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition">
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-3 no-print">
+            <button onclick="switchTab(1)" id="tab-btn-1" class="tab-btn bg-slate-800 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm">
+                1. Đạo Hàm
+            </button>
+            <button onclick="switchTab(2)" id="tab-btn-2" class="tab-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition">
+                2. Nguyên Hàm
+            </button>
+            <button onclick="switchTab(3)" id="tab-btn-3" class="tab-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition">
+                3. Tích Phân
+            </button>
+            <button onclick="switchTab(4)" id="tab-btn-4" class="tab-btn bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition">
+                4. Ứng Dụng Hình Học & Mẹo
+            </button>
+        </div>
+
+        <!-- Search Result Alert -->
+        <div id="search-alert" class="hidden mb-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-xs flex justify-between items-center">
+            <span><i class="fa-solid fa-filter mr-2"></i>Đang hiển thị kết quả lọc theo từ khóa. <button onclick="resetSearch()" class="underline font-semibold ml-2">Xóa bộ lọc</button></span>
+        </div>
+
+        <!-- ==================== TAB 1: ĐẠO HÀM ==================== -->
+        <div id="tab-1" class="tab-content space-y-6">
+            <!-- Định nghĩa & Tính chất -->
+            <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 sm:p-5 searchable-section">
+                <span class="inline-block bg-amber-200 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider mb-2">Định Nghĩa & Quy Tắc</span>
+                <h3 class="text-base font-semibold text-slate-800 mb-2">1. Định nghĩa & Các quy tắc tính đạo hàm</h3>
+                
+                <div class="text-xs sm:text-sm text-slate-700 space-y-2 mb-3">
+                    <p><strong>Định nghĩa:</strong> $f'(x_0) = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x) - f(x_0)}{\Delta x} = \lim_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0}$</p>
+                    <p><strong>Đạo hàm hàm hợp:</strong> Nếu $y = f(u)$ và $u = u(x)$ thì $y'_x = y'_u \cdot u'_x$</p>
+                </div>
+
+                <div class="bg-white/80 rounded-lg p-3 border border-amber-100 text-xs sm:text-sm grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>$\bullet \ (u \pm v)' = u' \pm v'$</div>
+                    <div>$\bullet \ (k \cdot u)' = k \cdot u'$</div>
+                    <div>$\bullet \ (u \cdot v)' = u'v + uv'$</div>
+                    <div>$\bullet \ \left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2} \quad (v \neq 0)$</div>
+                </div>
+            </div>
+
+            <!-- Bảng công thức Đạo Hàm -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm searchable-section">
+                <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 font-semibold text-slate-800 text-sm flex justify-between items-center">
+                    <span>Bảng công thức đạo hàm cơ bản & hàm hợp</span>
+                    <span class="text-xs font-normal text-slate-500">($u = u(x)$)</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-100/70 text-slate-700 font-medium">
+                            <tr>
+                                <th class="p-3 border-b border-r border-slate-200 w-1/2">Đạo hàm hàm sơ cấp $f(x)$</th>
+                                <th class="p-3 border-b border-slate-200 w-1/2">Đạo hàm hàm hợp $f(u)$</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-amber-50/20 text-slate-800">
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(c)' = 0 \quad (c \text{ là hằng số})$</td>
+                                <td class="p-3">$(x)' = 1$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(x^\alpha)' = \alpha \cdot x^{\alpha-1}$</td>
+                                <td class="p-3">$(u^\alpha)' = \alpha \cdot u^{\alpha-1} \cdot u'$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$\left(\frac{1}{x}\right)' = -\frac{1}{x^2}$</td>
+                                <td class="p-3">$\left(\frac{1}{u}\right)' = -\frac{u'}{u^2}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\sqrt{x})' = \frac{1}{2\sqrt{x}}$</td>
+                                <td class="p-3">$(\sqrt{u})' = \frac{u'}{2\sqrt{u}}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(e^x)' = e^x$</td>
+                                <td class="p-3">$(e^u)' = u' \cdot e^u$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(a^x)' = a^x \ln a$</td>
+                                <td class="p-3">$(a^u)' = u' \cdot a^u \ln a$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\ln|x|)' = \frac{1}{x}$</td>
+                                <td class="p-3">$(\ln|u|)' = \frac{u'}{u}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\log_a |x|)' = \frac{1}{x \ln a}$</td>
+                                <td class="p-3">$(\log_a |u|)' = \frac{u'}{u \ln a}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\sin x)' = \cos x$</td>
+                                <td class="p-3">$(\sin u)' = u' \cdot \cos u$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\cos x)' = -\sin x$</td>
+                                <td class="p-3">$(\cos u)' = -u' \cdot \sin u$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\tan x)' = \frac{1}{\cos^2 x} = 1 + \tan^2 x$</td>
+                                <td class="p-3">$(\tan u)' = \frac{u'}{\cos^2 u}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$(\cot x)' = -\frac{1}{\sin^2 x} = -(1 + \cot^2 x)$</td>
+                                <td class="p-3">$(\cot u)' = -\frac{u'}{\sin^2 u}$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mẹo Đạo Hàm Phân Thức -->
+            <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-4 sm:p-5 searchable-section">
+                <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Mẹo tính nhanh đạo hàm phân thức</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                    <div class="bg-white p-3 rounded-lg border border-blue-100">
+                        <p class="font-medium text-slate-700 mb-1">Bậc nhất / Bậc nhất:</p>
+                        <p class="text-blue-900 font-mono">$\left(\frac{ax+b}{cx+d}\right)' = \frac{ad - bc}{(cx+d)^2}$</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-blue-100">
+                        <p class="font-medium text-slate-700 mb-1">Bậc hai / Bậc nhất:</p>
+                        <p class="text-blue-900 font-mono">$\left(\frac{ax^2+bx+c}{px+q}\right)' = \frac{ap\,x^2 + 2aq\,x + (bq - cp)}{(px+q)^2}$</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: NGUYÊN HÀM ==================== -->
+        <div id="tab-2" class="tab-content hidden space-y-6">
+            <!-- Định nghĩa -->
+            <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 sm:p-5 searchable-section">
+                <span class="inline-block bg-amber-200 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider mb-2">Định Nghĩa • SGK</span>
+                <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                    Hàm số $F(x)$ được gọi là một nguyên hàm của hàm số $f(x)$ trên $K$ nếu $F'(x) = f(x)$ với mọi $x$ thuộc $K$.
+                </p>
+                
+                <div class="mt-3 bg-white/80 rounded-lg p-3 border border-amber-100 text-xs sm:text-sm space-y-2 text-slate-700">
+                    <p><strong>Chú ý 1:</strong> Họ tất cả các nguyên hàm của $f(x)$ trên $K$, ký hiệu $\int f(x)dx = F(x) + C$, với $C \in \mathbb{R}$.</p>
+                    <p><strong>Chú ý 2:</strong> Mọi hàm số $f(x)$ liên tục trên $K$ đều có nguyên hàm trên $K$.</p>
+                    <p class="text-center font-semibold text-amber-900 pt-1 border-t border-amber-100">$F'(x) = f(x) \iff \int f(x) dx = F(x) + C$</p>
+                </div>
+            </div>
+
+            <!-- Các tính chất cơ bản -->
+            <div class="border border-slate-200 rounded-xl p-4 sm:p-5 bg-white searchable-section">
+                <h3 class="text-sm font-semibold text-slate-800 mb-3">2. Các tính chất cơ bản của nguyên hàm</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\oplus \quad \int f'(x) dx = f(x) + C$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\oplus \quad \int k \cdot f(x) dx = k \int f(x) dx \quad (k \neq 0)$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100" class="col-span-1 md:col-span-2">$\oplus \quad \int [f(x) \pm g(x)] dx = \int f(x) dx \pm \int g(x) dx$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\oplus \quad d\left(\int f(x)dx\right) = f(x)dx$</div>
+                </div>
+            </div>
+
+            <!-- Bảng nguyên hàm cơ bản -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm searchable-section">
+                <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 font-semibold text-slate-800 text-sm">
+                    Bảng nguyên hàm cơ bản
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <tbody class="divide-y divide-slate-200 bg-amber-50/10 text-slate-800">
+                            <tr class="grid grid-cols-1 md:grid-cols-2">
+                                <td class="p-3 border-b md:border-b-0 md:border-r border-slate-200">$\int 0 \, dx = C$</td>
+                                <td class="p-3 border-b md:border-b-0 border-slate-200">$\int 1 \, dx = x + C$</td>
+                            </tr>
+                            <tr class="grid grid-cols-1 md:grid-cols-2">
+                                <td class="p-3 border-b md:border-b-0 md:border-r border-slate-200">$\int x^\alpha dx = \frac{x^{\alpha+1}}{\alpha+1} + C \quad (\alpha \neq -1)$</td>
+                                <td class="p-3 border-b md:border-b-0 border-slate-200">$\int \frac{1}{x} dx = \ln|x| + C$</td>
+                            </tr>
+                            <tr class="grid grid-cols-1 md:grid-cols-2">
+                                <td class="p-3 border-b md:border-b-0 md:border-r border-slate-200">$\int e^x dx = e^x + C$</td>
+                                <td class="p-3 border-b md:border-b-0 border-slate-200">$\int a^x dx = \frac{a^x}{\ln a} + C \quad (0 < a \neq 1)$</td>
+                            </tr>
+                            <tr class="grid grid-cols-1 md:grid-cols-2">
+                                <td class="p-3 border-b md:border-b-0 md:border-r border-slate-200">$\int \cos x \, dx = \sin x + C$</td>
+                                <td class="p-3 border-b md:border-b-0 border-slate-200">$\int \sin x \, dx = -\cos x + C$</td>
+                            </tr>
+                            <tr class="grid grid-cols-1 md:grid-cols-2">
+                                <td class="p-3 border-b md:border-b-0 md:border-r border-slate-200">$\int \frac{1}{\cos^2 x} dx = \tan x + C$</td>
+                                <td class="p-3 border-b md:border-b-0 border-slate-200">$\int \frac{1}{\sin^2 x} dx = -\cot x + C$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: TÍCH PHÂN ==================== -->
+        <div id="tab-3" class="tab-content hidden space-y-6">
+            <!-- Định nghĩa Tích phân -->
+            <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 sm:p-5 searchable-section">
+                <span class="inline-block bg-amber-200 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider mb-2">Định Lý Newton - Leibniz</span>
+                <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                    Cho $f(x)$ liên tục trên $[a; b]$. Nếu $F(x)$ là một nguyên hàm của $f(x)$ trên $[a; b]$ thì:
+                </p>
+                <div class="my-3 text-center py-2 bg-white rounded-lg border border-amber-200 text-sm sm:text-base font-semibold text-slate-800">
+                    $\int_{a}^{b} f(x) dx = \left. F(x) \right|_{a}^{b} = F(b) - F(a)$
+                </div>
+            </div>
+
+            <!-- Các Tính Chất Của Tích Phân -->
+            <div class="border border-slate-200 rounded-xl p-4 sm:p-5 bg-white searchable-section">
+                <h3 class="text-sm font-semibold text-slate-800 mb-3">Tính chất quan trọng của Tích Phân</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\bullet \ \int_{a}^{a} f(x) dx = 0$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\bullet \ \int_{a}^{b} f(x) dx = -\int_{b}^{a} f(x) dx$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\bullet \ \int_{a}^{b} k \cdot f(x) dx = k \int_{a}^{b} f(x) dx$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">$\bullet \ \int_{a}^{b} f(x) dx = \int_{a}^{c} f(x) dx + \int_{c}^{b} f(x) dx$</div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 col-span-1 md:col-span-2">
+                        $\bullet \ $ Nếu $f(x) \ge 0, \forall x \in [a; b]$ thì $\int_{a}^{b} f(x) dx \ge 0$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phương Pháp Tính Tích Phân -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 searchable-section">
+                <!-- Đổi biến -->
+                <div class="border border-slate-200 rounded-xl p-4 bg-white">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">1. Phương pháp đổi biến số</h4>
+                    <p class="text-xs text-slate-600 mb-2">Đặt $t = u(x) \Rightarrow dt = u'(x)dx$. Đổi cận $x=a \to t=u(a)$, $x=b \to t=u(b)$.</p>
+                    <div class="p-2 bg-slate-50 rounded text-xs text-center font-mono">
+                        $\int_{a}^{b} f(u(x)) u'(x) dx = \int_{u(a)}^{u(b)} f(t) dt$
+                    </div>
+                </div>
+                <!-- Tích phân từng phần -->
+                <div class="border border-slate-200 rounded-xl p-4 bg-white">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">2. Tích phân từng phần</h4>
+                    <p class="text-xs text-slate-600 mb-2">Thứ tự ưu tiên đặt $u$: <em>"Nhất lô, nhị đa, tam lượng, tứ mũ"</em>.</p>
+                    <div class="p-2 bg-slate-50 rounded text-xs text-center font-mono">
+                        $\int_{a}^{b} u \, dv = \left. (u \cdot v) \right|_{a}^{b} - \int_{a}^{b} v \, du$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: ỨNG DỤNG HÌNH HỌC & MẸO ==================== -->
+        <div id="tab-4" class="tab-content hidden space-y-6">
+            <!-- Diện tích hình phẳng -->
+            <div class="border border-amber-200 bg-amber-50/40 rounded-xl p-4 sm:p-5 searchable-section">
+                <h3 class="text-sm font-semibold text-amber-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-shapes mr-2"></i> 1. Tính diện tích hình phẳng ($S$)
+                </h3>
+                
+                <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="bg-white p-3 rounded-lg border border-amber-100">
+                        <p class="font-medium text-slate-800">Hình giới hạn bởi 1 đồ thị $y=f(x)$, trục $Ox$ và 2 đường thẳng $x=a, x=b$:</p>
+                        <p class="text-center font-bold text-slate-900 mt-1">$S = \int_{a}^{b} |f(x)| dx$</p>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-lg border border-amber-100">
+                        <p class="font-medium text-slate-800">Hình giới hạn bởi 2 đồ thị $y=f(x)$, $y=g(x)$ và 2 đường thẳng $x=a, x=b$:</p>
+                        <p class="text-center font-bold text-slate-900 mt-1">$S = \int_{a}^{b} |f(x) - g(x)| dx$</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thể tích vật thể tròn xoay -->
+            <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-4 sm:p-5 searchable-section">
+                <h3 class="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-cube mr-2"></i> 2. Tính thể tích khối tròn xoay ($V$)
+                </h3>
+                
+                <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="bg-white p-3 rounded-lg border border-blue-100">
+                        <p class="font-medium text-slate-800">Quay hình phẳng giới hạn bởi $y=f(x), Ox, x=a, x=b$ quanh trục $Ox$:</p>
+                        <p class="text-center font-bold text-slate-900 mt-1">$V_x = \pi \int_{a}^{b} [f(x)]^2 dx$</p>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-lg border border-blue-100">
+                        <p class="font-medium text-slate-800">Thể tích vật thể cắt bởi 2 mặt phẳng $x=a, x=b$ có diện tích thiết diện $S(x)$:</p>
+                        <p class="text-center font-bold text-slate-900 mt-1">$V = \int_{a}^{b} S(x) dx$</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng Mở Rộng Hàm Hợp (Thường gặp trong đề thi) -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm searchable-section">
+                <div class="bg-slate-100 px-4 py-2.5 font-semibold text-slate-800 text-xs sm:text-sm">
+                    <i class="fa-solid fa-star text-amber-500 mr-1"></i> Bảng Nguyên Hàm Mở Rộng Dạng $(ax+b)$
+                </div>
+                <div class="overflow-x-auto text-xs sm:text-sm">
+                    <table class="w-full text-left">
+                        <tbody class="divide-y divide-slate-200 bg-white text-slate-800">
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$\int (ax+b)^\alpha dx = \frac{1}{a}\frac{(ax+b)^{\alpha+1}}{\alpha+1} + C$</td>
+                                <td class="p-3">$\int \frac{1}{ax+b} dx = \frac{1}{a} \ln|ax+b| + C$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$\int e^{ax+b} dx = \frac{1}{a} e^{ax+b} + C$</td>
+                                <td class="p-3">$\int \cos(ax+b) dx = \frac{1}{a} \sin(ax+b) + C$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-r border-slate-200">$\int \sin(ax+b) dx = -\frac{1}{a} \cos(ax+b) + C$</td>
+                                <td class="p-3">$\int \frac{1}{\cos^2(ax+b)} dx = \frac{1}{a} \tan(ax+b) + C$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Notice -->
+        <div class="mt-8 pt-4 border-t border-slate-100 text-center text-slate-400 text-[11px]">
+            Sổ tay ôn tập Toán 12 • Học hiểu bản chất, nhớ công thức có hệ thống.
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Switch tab functionality
+        function switchTab(tabIndex) {
+            // Update page indicator
+            document.getElementById('page-indicator').innerText = tabIndex;
+
+            // Hide all tabs
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                const btn = document.getElementById(`tab-btn-${i}`);
+                if (tab) tab.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-slate-800', 'text-white', 'shadow-sm');
+                    btn.classList.add('bg-slate-100', 'text-slate-600');
+                }
+            }
+
+            // Show active tab
+            const activeTab = document.getElementById(`tab-${tabIndex}`);
+            const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+                activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow-sm');
+            }
+
+            // Re-render MathJax formula if needed
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Live search filter
+        function searchFormula() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const alertBox = document.getElementById('search-alert');
+            
+            if (query === '') {
+                resetSearch();
+                return;
+            }
+
+            alertBox.classList.remove('hidden');
+
+            // Show all tabs during search
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                if (tab) tab.classList.remove('hidden');
+            }
+
+            // Filter sections
+            const sections = document.querySelectorAll('.searchable-section');
+            sections.forEach(section => {
+                const text = section.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('search-alert').classList.add('hidden');
+            
+            const sections = document.querySelectorAll('.searchable-section');
+            sections.forEach(section => {
+                section.style.display = 'block';
+            });
+
+            // Return to tab 1
+            switchTab(1);
+        }
+    </script>
+</body>
+</html>
+```eof
